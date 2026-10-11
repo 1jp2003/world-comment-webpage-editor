@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<head>
-    <title>World Comment Editor</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<html>
+    <head>
+        <title>World Comment Editor</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
 
-<body>
-    <div class="container">
-    <>
-</body>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop -->
+    <body>
+        <div class="container">
+        <label id="drop-zone">
+            Drop images here, or click to upload.
+            <input type="file" id="file-input" multiple accept="image/*" />
+        </label>
+        <ul id="preview"></ul>
+        <button id="clear-btn">Clear</button>
+        </div>
+    <script src="script.js"></script>
+
+    </body>
+</html>
