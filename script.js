@@ -45,6 +45,9 @@ const filterInput = document.getElementById("filterInput");
 const loadRemoteInput = document.getElementById("loadRemoteInput");
 const showDeletedInput = document.getElementById("showDeletedInput");
 const shiftScopeEl = document.getElementById("shiftScope");
+const sortSelect = document.getElementById("sortSelect");
+const dateFrom = document.getElementById("dateFrom");
+const dateTo = document.getElementById("dateTo");
 const countLabel = document.getElementById("countLabel");
 const sectionsEl = document.getElementById("sections");
 const saveBtn = document.getElementById("saveBtn");
@@ -331,12 +334,39 @@ function fillShiftScope() {
     for (const dimDir of sortedDimensions()) shiftScopeEl.append(new Option(dimensionTitle(dimDir), dimDir));
 }
 
+// ---------- Timeframe: date range filter and sorting ----------
+/** Keeps comments posted inside the chosen day range (local time, both ends inclusive). */
+function filterByDate(list) {
+    // <input type="date"> gives "YYYY-MM-DD", or "" when empty. Building the Date from parts uses local time.
+    const dayStart = value => {
+        if (!value) return null;
+        const [y, m, d] = value.split("-").map(Number);
+        return new Date(y, m - 1, d).getTime();
+    };
+    const from = dayStart(dateFrom.value);
+    const toDay = dayStart(dateTo.value);
+    if (from === null && toDay === null) return list;
+    const to = toDay === null ? null : toDay + 24 * 60 * 60 * 1000; // end of that day (exclusive)
+    return list.filter(c => {
+        if (!c.timestamp) return false; // no timestamp: can't be placed in a range
+        return (from === null || c.timestamp >= from) && (to === null || c.timestamp < to);
+    });
+}
+
+/** Sorts a copy by post time; JS sort is stable, so ties keep their original order. */
+function sortComments(list) {
+    if (sortSelect.value === "new") return [...list].sort((a, b) => b.timestamp - a.timestamp);
+    if (sortSelect.value === "old") return [...list].sort((a, b) => a.timestamp - b.timestamp);
+    return list;
+}
+
 // ---------- Table ----------
 function renderTable() {
     const needle = filterInput.value.trim().toLowerCase();
     const matching = comments.filter(c => !needle || c.searchText.includes(needle));
-    shown = showDeletedInput.checked ? matching : matching.filter(c => !c.deleted);
-    const hiddenDeleted = matching.length - shown.length;
+    const visible = showDeletedInput.checked ? matching : matching.filter(c => !c.deleted);
+    const hiddenDeleted = matching.length - visible.length;
+    shown = sortComments(filterByDate(visible));
 
     // One section per dimension. Group everything first so a dimension whose comments are all
     // filtered out still gets a section (with a note) instead of silently vanishing.
@@ -388,7 +418,7 @@ function buildSection(dimDir, group) {
         const note = document.createElement("p");
         note.className = "muted dim-empty";
         note.textContent = group.all.length
-            ? "No comments to show here (check the filter, or turn on \"Show deleted comments\")."
+            ? "No comments to show here (check the filter or date range, or turn on \"Show deleted comments\")."
             : "No comments.";
         details.append(note);
         return details;
@@ -691,6 +721,9 @@ function buildRow(c) {
 filterInput.addEventListener("input", renderTable);
 loadRemoteInput.addEventListener("change", renderTable);
 showDeletedInput.addEventListener("change", renderTable);
+sortSelect.addEventListener("change", renderTable);
+dateFrom.addEventListener("change", renderTable);
+dateTo.addEventListener("change", renderTable);
 
 function readShift() {
     return {

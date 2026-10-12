@@ -52,6 +52,15 @@
         <label title="Deleted comments are dropped by the mod when it loads. They stay in the files you save either way; this only changes what you see here.">
             <input type="checkbox" id="showDeletedInput"> Show deleted comments
         </label>
+        <label>Sort by
+            <select id="sortSelect">
+                <option value="">Original order</option>
+                <option value="new">Posted: newest first</option>
+                <option value="old">Posted: oldest first</option>
+            </select>
+        </label>
+        <label title="Only show comments posted on or after this day (your local time).">Posted from <input type="date" id="dateFrom"></label>
+        <label title="Only show comments posted on or before this day (your local time).">to <input type="date" id="dateTo"></label>
         <span class="spacer"></span>
         <label>Shift shown comments in
             <select id="shiftScope"><option value="">all dimensions</option></select>

@@ -194,7 +194,7 @@ details.dimension > summary .meta {
 
 .dim-empty { padding: 4px 0 0; }
 
-select {
+select, input[type="date"] {
     padding: 5px;
     color: var(--text);
     background: var(--input-bg);
