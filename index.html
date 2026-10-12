@@ -1,21 +1,83 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>World Comment Editor</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Comment Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Runs before the page paints so a saved choice doesn't flash the wrong theme.
+        try {
+            const saved = localStorage.getItem("theme");
+            if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+        } catch (e) { /* storage blocked: follow the system setting */ }
+    </script>
+</head>
+<body>
 
-    <!-- https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop -->
-    <body>
-        <div class="container">
-        <label id="drop-zone">
-            Drop images here, or click to upload.
-            <input type="file" id="file-input" multiple accept="image/*" />
+<div class="container">
+    <div class="topbar">
+        <h1>World Comment Editor</h1>
+        <button id="themeBtn" class="theme-btn" type="button">
+            <span class="icon icon-moon" aria-hidden="true"></span>
+            <span class="icon icon-sun" aria-hidden="true"></span>
+        </button>
+    </div>
+    <p>
+        For WorldComment's <code>.bin</code> format (<code>region/&lt;dimension&gt;/r.X.Z.bin</code>).
+        Everything runs in your browser; no files are uploaded. Close the game or server before replacing any files, and keep a backup.
+    </p>
+
+    <div class="upload-section">
+        <label>
+            Pick the whole comment folder (the one containing <code>region/</code> and <code>image/</code>)
+            <input type="file" id="folderInput" webkitdirectory>
         </label>
-        <ul id="preview"></ul>
-        <button id="clear-btn">Clear</button>
-        </div>
-    <script src="script.js"></script>
+        <div class="or">or</div>
+        <label>
+            Pick individual <code>.bin</code> files (no dimension or thumbnails)
+            <input type="file" id="fileInput" accept=".bin" multiple>
+        </label>
+    </div>
 
-    </body>
+    <div id="status" class="status" role="status"></div>
+    <div id="summary" class="summary" hidden></div>
+
+    <div id="tools" class="tools" hidden>
+        <label>Filter <input type="search" id="filterInput" placeholder="user, message, type, file..."></label>
+        <span id="countLabel"></span>
+        <label title="Fetches thumbnails from the web addresses stored in the comments. Those hosts will see your IP address.">
+            <input type="checkbox" checked="checked" id="loadRemoteInput"> Load remote images
+        </label>
+        <label title="Deleted comments are dropped by the mod when it loads. They stay in the files you save either way; this only changes what you see here.">
+            <input type="checkbox" id="showDeletedInput"> Show deleted comments
+        </label>
+        <span class="spacer"></span>
+        <label>Shift shown comments in
+            <select id="shiftScope"><option value="">all dimensions</option></select>
+            by
+            X <input type="number" id="shiftX" value="0" step="1">
+            Y <input type="number" id="shiftY" value="0" step="1">
+            Z <input type="number" id="shiftZ" value="0" step="1">
+        </label>
+        <button id="applyShiftBtn" class="btn small">Apply to shown</button>
+        <span class="selection">
+            <span id="selectionLabel">0 selected</span>
+            <button id="applySelectedBtn" class="btn small" disabled>Apply to selected</button>
+            <button id="clearSelectionBtn" class="btn small secondary" disabled>Clear selection</button>
+        </span>
+        <button id="resetBtn" class="btn small secondary">Reset all</button>
+    </div>
+
+    <!-- One collapsible section per dimension is built here by script.js -->
+    <div id="sections"></div>
+
+    <div class="actions">
+        <button id="saveBtn" class="btn" disabled>Download Modified Files</button>
+    </div>
+</div>
+
+<script src="jszip.min.js"></script>
+<script src="script.js"></script>
+</body>
 </html>

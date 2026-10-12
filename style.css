@@ -1,46 +1,387 @@
+/* Colour palette. Everything below uses these variables, so a theme is just a different set of values. */
+:root {
+    color-scheme: light;
+    --bg: #f4f4f9;
+    --surface: #ffffff;
+    --text: #333333;
+    --heading: #2c3e50;
+    --label: #555555;
+    --muted: #999999;
+    --muted-2: #777777;
+    --border: #dddddd;
+    --border-soft: #e3e6ea;
+    --rule: #eeeeee;
+    --code-bg: #eeeeee;
+    --panel: #f8f9fa;
+    --accent: #3498db;
+    --input-bg: #ffffff;
+    --input-border: #cccccc;
+    --bad: #c0392b;
+    --bad-bg: #fdecea;
+    --warn-bg: #fff6e0;
+    --selected-bg: #eaf4fd;
+    --badge-bg: #e8eaed;
+    --badge-text: #444444;
+    --btn-disabled: #cccccc;
+    --btn-secondary: #7f8c8d;
+    --btn-secondary-hover: #6c7a7b;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark values. Used when the page follows a dark operating system (and the user has not picked light)... */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #14161a;
+        --surface: #1e2227;
+        --text: #dde1e6;
+        --heading: #e8edf2;
+        --label: #aab2bb;
+        --muted: #8a929b;
+        --muted-2: #98a0a9;
+        --border: #3a4048;
+        --border-soft: #333940;
+        --rule: #333940;
+        --code-bg: #2b3037;
+        --panel: #262b31;
+        --accent: #5dade2;
+        --input-bg: #14161a;
+        --input-border: #4a525b;
+        --bad: #ff7b6b;
+        --bad-bg: #4a2420;
+        --warn-bg: #4a3a12;
+        --selected-bg: #1f3447;
+        --badge-bg: #3a4048;
+        --badge-text: #d0d5db;
+        --btn-disabled: #3a4048;
+        --btn-secondary: #5f6b72;
+        --btn-secondary-hover: #6f7c83;
+        --shadow: rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ...or when the user pressed the toggle to choose dark. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #14161a;
+    --surface: #1e2227;
+    --text: #dde1e6;
+    --heading: #e8edf2;
+    --label: #aab2bb;
+    --muted: #8a929b;
+    --muted-2: #98a0a9;
+    --border: #3a4048;
+    --border-soft: #333940;
+    --rule: #333940;
+    --code-bg: #2b3037;
+    --panel: #262b31;
+    --accent: #5dade2;
+    --input-bg: #14161a;
+    --input-border: #4a525b;
+    --bad: #ff7b6b;
+    --bad-bg: #4a2420;
+    --warn-bg: #4a3a12;
+    --selected-bg: #1f3447;
+    --badge-bg: #3a4048;
+    --badge-text: #d0d5db;
+    --btn-disabled: #3a4048;
+    --btn-secondary: #5f6b72;
+    --btn-secondary-hover: #6f7c83;
+    --shadow: rgba(0, 0, 0, 0.5);
+}
+
 body {
-  font-family: "Arial", sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    padding: 16px;
+    color: var(--text);
 }
 
-#drop-zone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 500px;
-  max-width: 100%;
-  height: 200px;
-  padding: 1em;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  color: slategray;
-  cursor: pointer;
+.container {
+    max-width: none;
+    margin: auto;
+    background: var(--surface);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow);
 }
 
-#file-input {
-  display: none;
+h1 {
+    color: var(--heading);
+    margin: 0;
 }
 
-#preview {
-  width: 500px;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  list-style: none;
-  padding: 0;
+code {
+    background: var(--code-bg);
+    padding: 2px 5px;
+    border-radius: 3px;
 }
 
-#preview li {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0;
-  width: 100%;
-  height: 100px;
+.upload-section {
+    border: 2px dashed var(--accent);
+    padding: 20px 30px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
 }
 
-#preview img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+.upload-section .or {
+    margin: 10px 0;
+    color: var(--muted-2);
+}
+
+.status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #e67e22;
+    white-space: pre-line;
+}
+
+.status.error { color: var(--bad); }
+.status.ok { color: #27ae60; }
+
+/* Summary strip */
+.summary {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.summary .warn { color: var(--bad); font-weight: 600; }
+
+/* Filter / bulk tools */
+.tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.tools .spacer { flex: 1; }
+
+.table-wrap {
+    overflow-x: auto;
+    margin-top: 4px;
+}
+
+/* One collapsible section per dimension */
+details.dimension {
+    margin-top: 16px;
+    padding: 0 14px 14px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+}
+
+details.dimension > summary {
+    cursor: pointer;
+    padding: 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--heading);
+}
+
+details.dimension > summary .meta {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted-2);
+}
+
+.dim-empty { padding: 4px 0 0; }
+
+select {
+    padding: 5px;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background-color: var(--panel);
+    white-space: nowrap;
+}
+
+tr.deleted td { opacity: 0.5; }
+
+td.msg { min-width: 220px; max-width: 420px; overflow-wrap: anywhere; }
+td.muted, .muted { color: var(--muted); font-style: italic; }
+td.nowrap { white-space: nowrap; }
+
+/* Theme toggle: round icon button. The icons are the SVG files used as a mask, so they are painted
+   with the button's text colour (currentColor) and follow the light / dark theme automatically. */
+.theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.theme-btn:hover { background: var(--panel); border-color: var(--muted); }
+.theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.theme-btn .icon {
+    width: 22px;
+    height: 22px;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    transition: transform 0.3s;
+}
+
+.theme-btn:hover .icon { transform: rotate(15deg); }
+
+.theme-btn .icon-moon {
+    -webkit-mask-image: url("svg/moon-svgrepo-com.svg");
+    mask-image: url("svg/moon-svgrepo-com.svg");
+}
+
+.theme-btn .icon-sun {
+    display: none;
+    -webkit-mask-image: url("svg/sun-svgrepo-com.svg");
+    mask-image: url("svg/sun-svgrepo-com.svg");
+}
+
+/* Light mode shows the moon (click = go dark); dark mode shows the sun (click = go light). */
+.theme-btn.is-dark .icon-moon { display: none; }
+.theme-btn.is-dark .icon-sun { display: block; }
+
+input[type="number"] {
+    width: 90px;
+    padding: 5px;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+}
+
+input[type="number"].invalid {
+    border-color: var(--bad);
+    background: var(--bad-bg);
+}
+
+input[type="search"] {
+    padding: 6px 8px;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    width: 220px;
+}
+
+/* Comment type chip */
+.chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1b1b1b;
+    white-space: nowrap;
+}
+
+/* Small flag badges */
+.badge {
+    display: inline-block;
+    padding: 1px 7px;
+    margin: 1px 2px 1px 0;
+    border-radius: 4px;
+    font-size: 11px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    white-space: nowrap;
+}
+
+.badge.bad { background: var(--bad-bg); color: var(--bad); }
+
+.thumb {
+    display: block;
+    width: 72px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+/* "Will be saved in" cell */
+td.moves { background: var(--warn-bg); font-weight: 600; }
+td.invalid-target { background: var(--bad-bg); color: var(--bad); }
+
+.actions {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.btn {
+    background: #27ae60;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover { background: #219150; }
+.btn:disabled { background: var(--btn-disabled); cursor: default; }
+.btn.small { padding: 6px 12px; font-size: 14px; }
+.btn.secondary { background: var(--btn-secondary); }
+.btn.secondary:hover { background: var(--btn-secondary-hover); }
+
+/* Row selection */
+tr.selected td { background: var(--selected-bg); }
+tr.selected td.moves { background: var(--warn-bg); }
+.tools .selection { display: inline-flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 1px solid var(--border); }
+
+/* Merged cells */
+.muted-line { color: var(--muted-2); font-size: 12px; }
+td.position { min-width: 250px; }
+.xyz { display: flex; gap: 6px; margin: 4px 0; }
+.xyz label { font-size: 12px; color: var(--label); white-space: nowrap; }
+.xyz input[type="number"] { width: 72px; padding: 3px 4px; }
+.tp-buttons { display: flex; gap: 6px; }
+.btn.tiny { padding: 2px 8px; font-size: 12px; }
+td.msg { min-width: 180px; max-width: 360px; }
+td.time { min-width: 95px; }
+
+/* Page title row with the theme toggle */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--rule);
 }
